@@ -49,9 +49,8 @@ AddType application/x-font-woff .woff
 	</FilesMatch>
 </IfModule>
 
-php_value max_input_vars 5000
-
 #If rewrite mod isn't enabled
 ErrorDocument 404 /index.php?controller=404
 
 # ~~end~~ Do not remove this comment, Prestashop will keep automatically the code outside this comment when .htaccess will be generated again
+
