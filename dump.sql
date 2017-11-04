@@ -2516,7 +2516,7 @@ CREATE TABLE `ps_employee` (
 
 LOCK TABLES `ps_employee` WRITE;
 /*!40000 ALTER TABLE `ps_employee` DISABLE KEYS */;
-INSERT INTO `ps_employee` VALUES (1,1,1,'Projekt','Projekt','projekt@projekt.com','1384641e417a658ba93326cc58098464','2017-10-23 14:26:40','2017-09-23','2017-10-23','0000-00-00','0000-00-00',1,NULL,NULL,'default','admin-theme.css',1,0,1,1,1,0,0,0,'2017-10-23');
+INSERT INTO `ps_employee` VALUES (1,1,1,'Projekt','Projekt','projekt@projekt.com','54e74060ba636ee18bf969489eef592a','2017-10-23 14:26:40','2017-09-23','2017-10-23','0000-00-00','0000-00-00',1,NULL,NULL,'default','admin-theme.css',1,0,1,1,1,0,0,0,'2017-10-23');
 /*!40000 ALTER TABLE `ps_employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
