@@ -1,25 +1,44 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
+
 
 public class RequestCreator {
 
     private String baseUrl;
     private String charset;
     private String contentType;
+    private String prodFilename, parentCatFilename, catFilename;
     private int timeout;
     private Map<String, String> params;
+    private File prodFile, parentCatFile, catFile;
+    private ArrayList<String> parentCategories, categories;
 
     public RequestCreator(String baseUrl, String charset, String contentType, int timeout) {
         this.baseUrl = baseUrl;
         this.charset = charset;
         this.contentType = contentType;
         this.timeout = timeout;
+
+        this.prodFilename = "csv/prod1050.csv";
+        this.parentCatFilename = "csv/parentCat.csv";
+        this.catFilename = "csv/cat.csv";
+
+        this.prodFile = new File(prodFilename,true);
+        this.parentCatFile = new File(parentCatFilename,true);
+        this.catFile = new File (catFilename, true);
+
+        categories = new ArrayList<>();
+        parentCategories = new ArrayList<>();
 
         params = new HashMap<>();
         params.put("method", "updateProduct");
@@ -45,7 +64,63 @@ public class RequestCreator {
 
             if (productWasFound(responseBody)) {
                 result = new ObjectMapper().readValue(responseBody, RequestResponse.class);
-                System.out.println("Product with id " + id + " is called: " + result.getData().getProduct_name());
+
+                System.out.println("Id: " + id +
+                        "; Nazwa: " + result.getData().getProduct_name() +
+                        "; Cena: "+ result.getData().getPrice() +
+                        "; URL: "+ result.getData().getImage()
+                );
+                saveCategories(result);
+                saveProducts(result);
+
+                /*prodFile.zapiszDoPliku(
+                        result.getData().getbN() + ';' +
+                        result.getData().getInstalments() + ';' +
+                        result.getData().getProduct_id_string() + ';' +
+                        result.getData().getProductSystemId() + ';' +
+                        result.getData().getInfo() + ';' +
+                        result.getData().getBestseller() + ';' +
+                        result.getData().getNameTwo() + ';' +
+                        result.getData().getcL() + ';' +
+                        result.getData().geteCr() + ';' +
+                        result.getData().getUrl() + ';' +
+                        result.getData().getProduct_type() + ';' +
+                        result.getData().getPrice() + ';' +
+                        result.getData().getStars() + ';' +
+                        result.getData().getcN() + ';' +
+                        result.getData().getCategoryLink() + ';' +
+                        result.getData().getBtn() + ';' +
+                        result.getData().getIns() + ';' +
+                        result.getData().getCategoryName() + ';' +
+                        result.getData().getPromo() + ';' +
+                        result.getData().getArticles() + ';' +
+                        result.getData().getbSel() + ';' +
+                        result.getData().getSubCategory() + ';' +
+                        result.getData().getBrandName() + ';' +
+                        result.getData().getbSl() + ';' +
+                        result.getData().getProductsGroupId() + ';' +
+                        result.getData().getNrO() + ';' +
+                        result.getData().getDiscountPrice() + ';' +
+                        result.getData().getEnergyLabel() + ';' +
+                        result.getData().getsId() + ';' +
+                        result.getData().getCreated_at() + ';' +
+                        result.getData().getSysId() + ';' +
+                        result.getData().getCatN() + ';' +
+                        result.getData().getNrOpinions() + ';' +
+                        result.getData().getUpdated_at() + ';' +
+                        result.getData().getProduct_name() + ';' +
+                        result.getData().getCatL() + ';' +
+                        result.getData().getPrm() + ';' +
+                        result.getData().getImage() + ';' +
+                        result.getData().getEnergyClass() + ';' +
+                        result.getData().getgId() + ';' +
+                        result.getData().getCategory() + ';' +
+                        result.getData().geteC() + ';' +
+                        result.getData().getEnergyCard() + ';' +
+                        result.getData().getProduct_id() + ';' +
+                        result.getData().getConversion() + ';' +
+                        result.getData().geteL() + ';'
+                );*/
             } else {
                 System.out.println("Product with id " + id + " has not been found!");
             }
@@ -58,5 +133,81 @@ public class RequestCreator {
 
     private boolean productWasFound(String responseBody) {
         return !responseBody.equals("{\"success\":true,\"data\":[]}");
+    }
+
+    public void saveCategories(RequestResponse result) throws IOException {
+        String parentCat = result.getData().getCategory();
+        String cat = result.getData().getProduct_type();
+        if (!parentCategories.contains(parentCat) && parentCat != null) {
+            parentCategories.add(parentCat);
+            parentCatFile.saveToFile(parentCat);
+        }
+        if (!categories.contains(cat) && cat != null) {
+            categories.add(cat);
+            catFile.saveToFile(
+                    cat + ';' +
+                            parentCat
+            );
+        }
+    }
+
+    public String parseFeatures(RequestResponse result) {
+        String info = result.getData().getInfo();
+        String finalString = "";
+        String[] features;
+        if (info != null && info != "") {
+            info = info
+                    .replace("[", "")
+                    .replace("]", "");
+
+            features = info.split("\",\"");
+
+            for (int i = 0; i < features.length; i++) {
+                features[i] = features[i]
+                        .replace("\"", "")
+                        .replace(":::", ":");
+                features[i] += ":" + i + " | ";
+                finalString += features[i];
+            }
+        }
+        return finalString;
+    }
+
+    public void saveProducts(RequestResponse result) throws IOException {
+
+        if(result.getData().getImage().startsWith("//f")) {
+            StringBuilder newUrl = new StringBuilder();
+            newUrl.append("http:");
+            newUrl.append(result.getData().getImage());
+            result.getData().setImage(newUrl.toString());
+        } else if (result.getData().getImage().startsWith("/foto")) {
+            StringBuilder newUrl = new StringBuilder();
+            newUrl.append("http://f01.esfr.pl");
+            newUrl.append(result.getData().getImage());
+            result.getData().setImage(newUrl.toString());
+        }
+
+        prodFile.saveToFile(unescapeHtml(
+                result.getData().getProduct_id_string() + ';' +
+                        result.getData().getProduct_type() + ';' + //K - kategoria
+                        result.getData().getPrice() + ';' + //L - cena
+                        //result.getData().getCategoryName() + ';' + //R - opis
+                        //result.getData().getBrandName() + ';' + //W - producent
+                        result.getData().getProduct_name() + ';' + //AI - nazwa produktu
+                        result.getData().getImage() + ';' + //AL - url do zdjecia
+                        //result.getData().getCategory() + ';' + //AO - nadrzedna kategoria
+                        result.getData().getProduct_id() + ';' + //AR - ilosc?
+                        parseFeatures(result) + ';' //cechy
+        ));
+    }
+
+    public void finishSaving() {
+        try {
+            parentCatFile.closeFile();
+            catFile.closeFile();
+            prodFile.closeFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
