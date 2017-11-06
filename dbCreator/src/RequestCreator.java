@@ -88,11 +88,25 @@ public class RequestCreator {
 
     public void saveCategories(RequestResponse result) throws IOException {
         String parentCat = result.getData().getCategory();
-        if (!parentCat.equals("AGD")) {
+        switch(parentCat){
+            case "TV, Audio i Video": parentCat = "Telewizory i RTV"; break;
+            case "Telefony i zegarki": parentCat = "Telefony, GPS i zegarki"; break;
+            case "Telefony i GPS": parentCat = "Telefony, GPS i zegarki"; break;
+        }
+        if (!parentCat.contains("AGD")
+                && !parentCat.equals("Narzędzia")) {
             String cat = result.getData().getProduct_type();
             if (!parentCategories.contains(parentCat) && parentCat != null) {
                 parentCategories.add(parentCat);
                 parentCatFile.saveToFile(parentCat);
+            }
+
+            switch(cat){
+                case "komputer all-in-one": cat = "Komputery All-In-One"; break;
+                case "urządzenie wielofunkcyjne": cat = "Urządzenia wielofunkcyjne"; break;
+                case "telefon komórkowy": cat = "Telefony i smartfony"; break;
+                case "kamera sportowa": cat = "Kamery sportowe"; break;
+                case "etui dedykowane": cat = "Etui do telefonów"; break;
             }
             if (!categories.contains(cat) && cat != null) {
                 categories.add(cat);
@@ -140,7 +154,21 @@ public class RequestCreator {
             result.getData().setImage(newUrl.toString());
         }
 
-        if (!result.getData().getCategory().equals("AGD") && !result.getData().getPrice().equals("0")) {
+        if (!result.getData().getCategory().contains("AGD")
+                && !result.getData().getCategory().equals("Narzędzia")
+                && !result.getData().getPrice().equals("0.00")) {
+            switch(result.getData().getCategory()){
+                case "TV, Audio i Video": result.getData().setCategory("Telewizory i RTV"); break;
+                case "Telefony i zegarki": result.getData().setCategory("Telefony, GPS i zegarki"); break;
+                case "Telefony i GPS": result.getData().setCategory("Telefony, GPS i zegarki"); break;
+            }
+            switch(result.getData().getProduct_type()){
+                case "komputer all-in-one": result.getData().setProduct_type("Komputery All-In-One"); break;
+                case "urządzenie wielofunkcyjne": result.getData().setProduct_type("Urządzenia wielofunkcyjne"); break;
+                case "telefon komórkowy": result.getData().setProduct_type("Telefony i smartfony"); break;
+                case "kamera sportowa": result.getData().setProduct_type("Kamery sportowe"); break;
+                case "etui dedykowane": result.getData().setProduct_type("Etui do telefonów"); break;
+            }
             prodFile.saveToFile(unescapeHtml(
                     result.getData().getProduct_id_string() + ';' +
                             result.getData().getProduct_type() + ';' + //K - kategoria
