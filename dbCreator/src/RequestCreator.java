@@ -29,7 +29,7 @@ public class RequestCreator {
         this.contentType = contentType;
         this.timeout = timeout;
 
-        this.prodFilename = "csv/prod1050.csv";
+        this.prodFilename = "csv/prod.csv";
         this.parentCatFilename = "csv/parentCat.csv";
         this.catFilename = "csv/cat.csv";
 
