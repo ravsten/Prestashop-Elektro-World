@@ -71,7 +71,7 @@ public class RequestCreator {
                         "; URL: "+ result.getData().getImage()
                 );
                 saveCategories(result);
-                saveProducts(result);
+                if(saveProducts(result) == false) return null;
             } else {
                 System.out.println("Product with id " + id + " has not been found!");
             }
@@ -140,8 +140,8 @@ public class RequestCreator {
         return finalString;
     }
 
-    public void saveProducts(RequestResponse result) throws IOException {
-
+    public boolean saveProducts(RequestResponse result) throws IOException {
+        boolean productSaved = false;
         if(result.getData().getImage().startsWith("//f")) {
             StringBuilder newUrl = new StringBuilder();
             newUrl.append("http:");
@@ -181,7 +181,9 @@ public class RequestCreator {
                             result.getData().getProduct_id() + ';' + //AR - ilosc?
                             parseFeatures(result) + ';' //cechy
             ));
+            productSaved = true;
         }
+        return productSaved;
     }
 
     public void finishSaving() {
