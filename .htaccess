@@ -48,7 +48,7 @@ AddType application/x-font-woff .woff
 		Header set Access-Control-Allow-Origin "*"
 	</FilesMatch>
 </IfModule>
-
+php_value max_input_vars 5000
 #If rewrite mod isn't enabled
 ErrorDocument 404 /index.php?controller=404
 
