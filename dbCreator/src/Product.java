@@ -26,6 +26,7 @@ public class Product {
     private String productsGroupId;
     private String nrO;
     private String discountPrice;
+    private String promotionLabel;
     private String energyLabel;
     private String sId;
     private String created_at;
@@ -45,6 +46,14 @@ public class Product {
     private String product_id;
     private String conversion;
     private String eL;
+
+    public String getPromotionLabel() {
+        return promotionLabel;
+    }
+
+    public void setPromotionLabel(String promotionLabel) {
+        this.promotionLabel = promotionLabel;
+    }
 
     public String getbN() {
         return bN;

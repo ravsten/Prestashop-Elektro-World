@@ -1,8 +1,8 @@
 public class DatabaseCreator {
 
-    private static final int REQUEST_LIMIT = 50;
+    private static final int REQUEST_LIMIT = 4000;
     private static final int TIMEOUT = 5000;
-    private static final int INITIAL_ID = 1056632; //1050
+    private static final int INITIAL_ID = 1053493; //1050
     // 1056120; //1000
     // 1055957; //950
     // 1055861; //900

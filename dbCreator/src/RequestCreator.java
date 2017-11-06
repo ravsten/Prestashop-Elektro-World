@@ -72,55 +72,6 @@ public class RequestCreator {
                 );
                 saveCategories(result);
                 saveProducts(result);
-
-                /*prodFile.zapiszDoPliku(
-                        result.getData().getbN() + ';' +
-                        result.getData().getInstalments() + ';' +
-                        result.getData().getProduct_id_string() + ';' +
-                        result.getData().getProductSystemId() + ';' +
-                        result.getData().getInfo() + ';' +
-                        result.getData().getBestseller() + ';' +
-                        result.getData().getNameTwo() + ';' +
-                        result.getData().getcL() + ';' +
-                        result.getData().geteCr() + ';' +
-                        result.getData().getUrl() + ';' +
-                        result.getData().getProduct_type() + ';' +
-                        result.getData().getPrice() + ';' +
-                        result.getData().getStars() + ';' +
-                        result.getData().getcN() + ';' +
-                        result.getData().getCategoryLink() + ';' +
-                        result.getData().getBtn() + ';' +
-                        result.getData().getIns() + ';' +
-                        result.getData().getCategoryName() + ';' +
-                        result.getData().getPromo() + ';' +
-                        result.getData().getArticles() + ';' +
-                        result.getData().getbSel() + ';' +
-                        result.getData().getSubCategory() + ';' +
-                        result.getData().getBrandName() + ';' +
-                        result.getData().getbSl() + ';' +
-                        result.getData().getProductsGroupId() + ';' +
-                        result.getData().getNrO() + ';' +
-                        result.getData().getDiscountPrice() + ';' +
-                        result.getData().getEnergyLabel() + ';' +
-                        result.getData().getsId() + ';' +
-                        result.getData().getCreated_at() + ';' +
-                        result.getData().getSysId() + ';' +
-                        result.getData().getCatN() + ';' +
-                        result.getData().getNrOpinions() + ';' +
-                        result.getData().getUpdated_at() + ';' +
-                        result.getData().getProduct_name() + ';' +
-                        result.getData().getCatL() + ';' +
-                        result.getData().getPrm() + ';' +
-                        result.getData().getImage() + ';' +
-                        result.getData().getEnergyClass() + ';' +
-                        result.getData().getgId() + ';' +
-                        result.getData().getCategory() + ';' +
-                        result.getData().geteC() + ';' +
-                        result.getData().getEnergyCard() + ';' +
-                        result.getData().getProduct_id() + ';' +
-                        result.getData().getConversion() + ';' +
-                        result.getData().geteL() + ';'
-                );*/
             } else {
                 System.out.println("Product with id " + id + " has not been found!");
             }
@@ -137,17 +88,19 @@ public class RequestCreator {
 
     public void saveCategories(RequestResponse result) throws IOException {
         String parentCat = result.getData().getCategory();
-        String cat = result.getData().getProduct_type();
-        if (!parentCategories.contains(parentCat) && parentCat != null) {
-            parentCategories.add(parentCat);
-            parentCatFile.saveToFile(parentCat);
-        }
-        if (!categories.contains(cat) && cat != null) {
-            categories.add(cat);
-            catFile.saveToFile(
-                    cat + ';' +
-                            parentCat
-            );
+        if (!parentCat.equals("AGD")) {
+            String cat = result.getData().getProduct_type();
+            if (!parentCategories.contains(parentCat) && parentCat != null) {
+                parentCategories.add(parentCat);
+                parentCatFile.saveToFile(parentCat);
+            }
+            if (!categories.contains(cat) && cat != null) {
+                categories.add(cat);
+                catFile.saveToFile(
+                        cat + ';' +
+                                parentCat
+                );
+            }
         }
     }
 
@@ -187,18 +140,20 @@ public class RequestCreator {
             result.getData().setImage(newUrl.toString());
         }
 
-        prodFile.saveToFile(unescapeHtml(
-                result.getData().getProduct_id_string() + ';' +
-                        result.getData().getProduct_type() + ';' + //K - kategoria
-                        result.getData().getPrice() + ';' + //L - cena
-                        //result.getData().getCategoryName() + ';' + //R - opis
-                        //result.getData().getBrandName() + ';' + //W - producent
-                        result.getData().getProduct_name() + ';' + //AI - nazwa produktu
-                        result.getData().getImage() + ';' + //AL - url do zdjecia
-                        //result.getData().getCategory() + ';' + //AO - nadrzedna kategoria
-                        result.getData().getProduct_id() + ';' + //AR - ilosc?
-                        parseFeatures(result) + ';' //cechy
-        ));
+        if (!result.getData().getCategory().equals("AGD") && !result.getData().getPrice().equals("0")) {
+            prodFile.saveToFile(unescapeHtml(
+                    result.getData().getProduct_id_string() + ';' +
+                            result.getData().getProduct_type() + ';' + //K - kategoria
+                            result.getData().getPrice() + ';' + //L - cena
+                            //result.getData().getCategoryName() + ';' + //R - opis
+                            //result.getData().getBrandName() + ';' + //W - producent
+                            result.getData().getProduct_name() + ';' + //AI - nazwa produktu
+                            result.getData().getImage() + ';' + //AL - url do zdjecia
+                            //result.getData().getCategory() + ';' + //AO - nadrzedna kategoria
+                            result.getData().getProduct_id() + ';' + //AR - ilosc?
+                            parseFeatures(result) + ';' //cechy
+            ));
+        }
     }
 
     public void finishSaving() {
