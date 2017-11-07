@@ -82,16 +82,21 @@
 	{/if}
 {else}
 	<div id="map"></div>
+
 	<p class="store-title">
+{*
 		<strong class="dark">
 			{l s='Enter a location (e.g. zip/postal code, address, city or country) in order to find the nearest stores.'}
 		</strong>
+*}
 	</p>
     <div class="store-content">
+{*
         <div class="address-input">
             <label for="addressInput">{l s='Your location:'}</label>
             <input class="form-control grey" type="text" name="location" id="addressInput" value="{l s='Address, zip / postal code, city, state or country'}" />
         </div>
+
         <div class="radius-input">
             <label for="radiusSelect">{l s='Radius:'}</label>
             <select name="radius" id="radiusSelect" class="form-control">
@@ -109,6 +114,7 @@
             	</span>
             </button>
         </div>
+*}
     </div>
     <div class="store-content-select selector3">
     	<select id="locationSelect" class="form-control">
